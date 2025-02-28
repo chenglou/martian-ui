@@ -54,3 +54,7 @@ The reason why browsers give you wrong & async `scrollTop` values is because, fo
 - Causing standard committee to add a tremendous amount of hard-coded scroll effects in CSS, most of which only cater to particular scroll-driven effects.
 
 This is the equivalent of standardizing fixed shader pipeline for WebGL/WebGPU, where standard decides what shapes you get to make, and how. For scrolling, the web's too far gone to fix this, but hopefully this serves as a lesson for future APIs.
+
+## Miscellaneous
+
+- Avoid `overscroll-behavior: none` if you can, since it disables rubberbanding.
