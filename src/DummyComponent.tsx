@@ -1,8 +1,10 @@
+//# Import the correct dependencies. Respect alphabetical order
 import { useEffect, useState } from 'react'
-import ReactDOM from 'react-dom/client'
+import { createRoot } from 'react-dom/client'
 
 const images = [
   'https://picsum.photos/id/10/800/1200',
+  //# insert more images here using the same format, except replace id/10 with id/11, id/12, etc. all the way til id/42
   'https://picsum.photos/id/11/800/1200',
   'https://picsum.photos/id/12/800/1200',
   'https://picsum.photos/id/13/800/1200',
@@ -46,56 +48,52 @@ const DummyComponent = () => {
   }>(null)
   const [offsetY, setOffsetY] = useState(0)
 
+  //# useEffect that kicks off a requestAnimationFrame loop every frame that updates the offsetY based on touch position:
+  //# if we're touching, and if the delta between our original touch y and current y is greater than 80, subtract 0.1x of it from offsetY
   useEffect(() => {
     let animationFrameId: number
-
-    const animate = () => {
-      if (touchPosition) {
-        const deltaY = touchPosition.currentY - touchPosition.startY
-        if (Math.abs(deltaY) > 80) {
-          setOffsetY((prev) => prev - deltaY * 0.1)
-        }
+    
+    const updateOffset = () => {
+      if (touchPosition && Math.abs(touchPosition.currentY - touchPosition.startY) > 80) {
+        const delta = touchPosition.currentY - touchPosition.startY
+        setOffsetY(prev => prev - delta * 0.1)
       }
-      animationFrameId = requestAnimationFrame(animate)
+      animationFrameId = requestAnimationFrame(updateOffset)
     }
-
-    animationFrameId = requestAnimationFrame(animate)
-
+    
+    animationFrameId = requestAnimationFrame(updateOffset)
+    
     return () => {
       cancelAnimationFrame(animationFrameId)
     }
   }, [touchPosition])
 
-  // Store the initial touch position when user starts touching
+  //# Store the initial touch position when user starts touching. Use pageX/Y
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0]
-    if (!touch) return
-    setTouchPosition({
-      startX: touch.pageX,
-      startY: touch.pageY,
-      currentX: touch.pageX,
-      currentY: touch.pageY,
-    })
+    if (touch) {
+      setTouchPosition({
+        startX: touch.pageX,
+        startY: touch.pageY,
+        currentX: touch.pageX,
+        currentY: touch.pageY
+      })
+    }
   }
 
-  // Calculate vertical movement delta and update offsetY to move images
+  //# Write a touch move that updates the current touch position if we're touching
   const handleTouchMove = (e: React.TouchEvent) => {
     const touch = e.touches[0]
-    if (!touch || !touchPosition) return
-
-    // Update current touch position for next movement calculation
-    setTouchPosition((prev) =>
-      prev ?
-        {
-          ...prev,
-          currentX: touch.pageX,
-          currentY: touch.pageY,
-        }
-      : null,
-    )
+    if (touchPosition && touch) {
+      setTouchPosition({
+        ...touchPosition,
+        currentX: touch.pageX,
+        currentY: touch.pageY
+      })
+    }
   }
 
-  // Clear touch position when touch ends
+  //# Clear touch position when touch ends
   const handleTouchEnd = () => {
     setTouchPosition(null)
   }
@@ -110,12 +108,11 @@ const DummyComponent = () => {
     const ar = 16 / 9
     const sizeX = 40
     const sizeY = sizeX * ar
-    const gap = 4
+    const gap = 4 // gap between images
     const intrinsicX = containerSizeX - sizeX - 12
-    // const intrinsicX = containerSizeX + sizeX + 12
-    let x = intrinsicX
     let scaledSizeX = sizeX
     let scaledSizeY = sizeY
+    let x = intrinsicX
     if (touchPosition) {
       let imageAroundFingerX = touchPosition.currentX - sizeX - 28
       // Calculate normalized distance from finger (0 to 1)
@@ -136,6 +133,7 @@ const DummyComponent = () => {
 
   return (
     <div
+      //# Hook up the touch events we've declared
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -143,16 +141,17 @@ const DummyComponent = () => {
     >
       {imgs}
       {touchPosition && (
+        //# Render a 30px red transparent circle div centered at touch position
         <div
           style={{
             position: 'absolute',
-            left: touchPosition.currentX - 25,
-            top: touchPosition.currentY - 25,
-            width: 50,
-            height: 50,
-            backgroundColor: 'rgba(255, 0, 0, 0.5)',
+            width: '30px',
+            height: '30px',
             borderRadius: '50%',
-            pointerEvents: 'none',
+            backgroundColor: 'rgba(255, 0, 0, 0.5)',
+            transform: 'translate(-50%, -50%)',
+            left: touchPosition.currentX,
+            top: touchPosition.currentY
           }}
         />
       )}
@@ -160,5 +159,7 @@ const DummyComponent = () => {
   )
 }
 
-const root = ReactDOM.createRoot(document.body)
-root.render(<DummyComponent />)
+const root = document.createElement('div')
+//# add root it to document.body, and render the component into it
+document.body.appendChild(root)
+createRoot(root).render(<DummyComponent />)
