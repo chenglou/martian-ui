@@ -8,8 +8,11 @@ Some new UI framework experiments reimagined using AI.
 npm install martian-ui
 ```
 
+## Usage
+
 API's in `src/`. The `examples/` folder is currently WIP; it doesn't build.
-Check chenglou.me for usage.
+
+Check https://chenglou.me for more usage.
 
 ## Development
 
