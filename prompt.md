@@ -4,6 +4,13 @@ Please copy paste exactly the code below into src/DummyComponent.tsx. Except: lo
 //# Import the correct dependencies. Respect alphabetical order
 import { createRoot } from 'react-dom/client'
 
+type Image = {
+  url: string
+  width: Spring
+  height: Spring
+  x: Spring
+}
+
 const images = [
   'https://picsum.photos/id/10/800/1200',
   //# insert more images here using the same format, except replace id/10 with id/11, id/12, etc. all the way til id/42
