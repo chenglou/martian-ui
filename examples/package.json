@@ -1,11 +1,21 @@
 {
   "name": "martian-ui",
-  "version": "0.0.1",
+  "version": "0.0.0",
+  "module": "index.ts",
+  "type": "module",
   "scripts": {
+    "start": "bun --hot src/server.ts",
     "check": "tsc --noEmit & eslint src"
   },
+  "dependencies": {
+    "bun-plugin-tailwind": "^0.0.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
   "devDependencies": {
-    "@types/bun": "^1.2.10",
+    "@types/bun": "^1.2.1",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
     "@typescript-eslint/eslint-plugin": "^8.23.0",
     "@typescript-eslint/parser": "^8.23.0",
     "@typescript-eslint/utils": "^8.23.0",
